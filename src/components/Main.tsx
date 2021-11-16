@@ -35,7 +35,7 @@ let theme = createTheme({
     },
   },
   typography: {
-    fontFamily: 'JetBrainsMono-Regular',
+    fontFamily: 'Alliance-No2-Light',
     h5: {
       fontWeight: 500,
       fontSize: 26,
@@ -43,7 +43,7 @@ let theme = createTheme({
     },
   },
   shape: {
-    borderRadius: 8,
+    borderRadius: 0,
   },
   components: {
     MuiTab: {
@@ -65,7 +65,9 @@ theme = {
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          backgroundColor: '#081627',
+          backgroundColor: '#1d2a3b',
+          // backgroundColor: '#1f2c3d'
+          // backgroundColor: '#081627',
         },
       },
     },
@@ -142,7 +144,7 @@ theme = {
     MuiListItemText: {
       styleOverrides: {
         primary: {
-          fontSize: 14,
+          fontSize: 13,
           fontWeight: theme.typography.fontWeightMedium,
         },
       },
@@ -175,17 +177,12 @@ const drawerWidth = 256;
 export default function Paperbase() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const isSmUp = useMediaQuery(theme.breakpoints.up('sm'));
-  const [pageOpen, setPageOpen] = React.useState(PageContent.DOL_MODEL_PAGE);
 
   const contentPage = useMainPageStore(state => state.pageContent, shallow);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
-
-  React.useEffect(() => {
-    setPageOpen(contentPage);
-  }, [contentPage]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -210,8 +207,8 @@ export default function Paperbase() {
         </Box>
         <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
           <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
-            {pageOpen === PageContent.DATA_SOURCES_PAGE && <DataSourcesPage/>}
-            {pageOpen === PageContent.DOL_MODEL_PAGE && <DolModelPage />}
+            {contentPage === PageContent.DATA_SOURCES_PAGE && <DataSourcesPage/>}
+            {contentPage === PageContent.DOL_MODEL_PAGE && <DolModelPage />}
           </Box>
           <Box component="footer" sx={{ p: 2, bgcolor: '#eaeff1' }}>
             <Copyright />

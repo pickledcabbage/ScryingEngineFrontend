@@ -90,7 +90,7 @@ export default function Navigator(props: DrawerProps) {
           ScryingEngine
         </ListItem>
         {categories.map(({ id, children }, catIndex) => (
-          <Box key={id} sx={{ bgcolor: '#101F33' }}>
+          <Box key={id} >
             <ListItem sx={{ py: 2, px: 3 }}>
               <ListItemText sx={{ color: '#fff' }}>{id}</ListItemText>
             </ListItem>
