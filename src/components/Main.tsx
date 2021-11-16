@@ -8,6 +8,11 @@ import Link from '@mui/material/Link';
 import Navigator from './Navigator';
 import Content from './Content';
 import Header from './Header';
+import { PageContent } from './PageContent';
+import { useMainPageStore } from '../state/MainPageStore';
+import DataSourcesPage from './DataSourcesPage';
+import DolModelPage from './DolModelPage';
+import shallow from 'zustand/shallow'
 
 function Copyright() {
   return (
@@ -165,22 +170,22 @@ theme = {
   },
 };
 
-enum PageContent {
-    DOL_MODEL_PAGE = 'dol_model_page',
-    QUERY_PAGE = 'query_page',
-}
-
 const drawerWidth = 256;
 
 export default function Paperbase() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [contentPage, setContentPage] = React.useState('DOL')
   const isSmUp = useMediaQuery(theme.breakpoints.up('sm'));
+  const [pageOpen, setPageOpen] = React.useState(PageContent.DOL_MODEL_PAGE);
+
+  const contentPage = useMainPageStore(state => state.pageContent, shallow);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
+  React.useEffect(() => {
+    setPageOpen(contentPage);
+  }, [contentPage]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -204,9 +209,9 @@ export default function Paperbase() {
           />
         </Box>
         <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-          <Header onDrawerToggle={handleDrawerToggle} />
           <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
-            <Content />
+            {pageOpen === PageContent.DATA_SOURCES_PAGE && <DataSourcesPage/>}
+            {pageOpen === PageContent.DOL_MODEL_PAGE && <DolModelPage />}
           </Box>
           <Box component="footer" sx={{ p: 2, bgcolor: '#eaeff1' }}>
             <Copyright />

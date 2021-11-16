@@ -17,29 +17,10 @@ import SettingsInputComponentIcon from '@mui/icons-material/SettingsInputCompone
 import TimerIcon from '@mui/icons-material/Timer';
 import SettingsIcon from '@mui/icons-material/Settings';
 import PhonelinkSetupIcon from '@mui/icons-material/PhonelinkSetup';
+import { PageContent } from './PageContent';
+import { useMainPageStore } from '../state/MainPageStore';
 
-const categories = [
-  {
-    id: 'Build',
-    children: [
-      {
-        id: 'DOL Models',
-        icon: <BackupTableIcon />,
-        active: true,
-      },
-      { id: 'Data Sources', icon: <DnsRoundedIcon /> },
-      { id: 'Queries', icon: <QueryStatsIcon /> },
-    ],
-  },
-  {
-    id: 'Quality',
-    children: [
-      { id: 'Analytics', icon: <SettingsIcon /> },
-      { id: 'Performance', icon: <TimerIcon /> },
-      { id: 'Test Lab', icon: <PhonelinkSetupIcon /> },
-    ],
-  },
-];
+
 
 const item = {
   py: '2px',
@@ -57,7 +38,50 @@ const itemCategory = {
 };
 
 export default function Navigator(props: DrawerProps) {
+  const categories = [
+    {
+      id: 'Build',
+      children: [
+        {
+          id: 'DOL Models',
+          icon: <BackupTableIcon />,
+          pageContent: PageContent.DOL_MODEL_PAGE,
+        },
+        { id: 'Data Sources', icon: <DnsRoundedIcon />,
+          pageContent: PageContent.DATA_SOURCES_PAGE},
+        { id: 'Queries', icon: <QueryStatsIcon /> },
+      ],
+    },
+    {
+      id: 'Quality',
+      children: [
+        { id: 'Analytics', icon: <SettingsIcon /> },
+        { id: 'Performance', icon: <TimerIcon /> },
+        { id: 'Test Lab', icon: <PhonelinkSetupIcon /> },
+      ],
+    },
+  ];
+
   const { ...other } = props;
+  const [currIndex, setCurrIndex] = React.useState([0,0]);
+
+  const setContent = useMainPageStore(state => state.setContent);
+
+  const handleItemClick = (catIndex: number, childIndex: number) => {
+    console.log(`Settings stuff: ${catIndex} ${childIndex}`);
+
+    setCurrIndex([catIndex, childIndex]);
+
+    const newObj = categories[catIndex].children[childIndex];
+
+    if (newObj.pageContent) {
+      setContent(newObj.pageContent);
+    }
+  }
+
+  const checkIfActive = (catIndex: number, childIndex: number) => {
+    return catIndex === currIndex[0] && childIndex === currIndex[1];
+  }
 
   return (
     <Drawer variant="permanent" {...other}>
@@ -65,14 +89,14 @@ export default function Navigator(props: DrawerProps) {
         <ListItem sx={{ ...item, ...itemCategory, fontSize: 22, color: '#fff' }}>
           ScryingEngine
         </ListItem>
-        {categories.map(({ id, children }) => (
+        {categories.map(({ id, children }, catIndex) => (
           <Box key={id} sx={{ bgcolor: '#101F33' }}>
             <ListItem sx={{ py: 2, px: 3 }}>
               <ListItemText sx={{ color: '#fff' }}>{id}</ListItemText>
             </ListItem>
-            {children.map(({ id: childId, icon, active }) => (
-              <ListItem disablePadding key={childId}>
-                <ListItemButton selected={active} sx={item}>
+            {children.map(({ id: childId, icon }, childIndex) => (
+              <ListItem disablePadding key={childId} onClick={() => handleItemClick(catIndex, childIndex)}>
+                <ListItemButton selected={checkIfActive(catIndex, childIndex)} sx={item}>
                   <ListItemIcon>{icon}</ListItemIcon>
                   <ListItemText>{childId}</ListItemText>
                 </ListItemButton>
